@@ -14,7 +14,7 @@ import mergeSoundFile from './Palangga.mp3';
 const App = () => {
   // Define Name Variables
   const someoneName = "LEZZIE NICE SULMERON MENDEZ";
-  const projectName = "MyHeartWentOps";
+  const projectName = "My Heart Went Oops";
 
   // =========================================
   // 1. STATE & MECHANICS (Merge, Collision, Text)
