@@ -1,39 +1,26 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
 
-// --- IMPORTS ---
-// 1. Photos
-import MyPhoto from './photo1.jpg'; // You
-import SomeonePhoto from './photo2.jpg'; // Special Someone
+import MyPhoto from './photo1.jpg';
+import SomeonePhoto from './photo2.jpg';
 
-// 2. Music
-// ADD YOUR MUSIC FILE TO SRC FOLDER (e.g., merge-sound.mp3)
 import mergeSoundFile from './Palangga.mp3'; 
 
 const App = () => {
-  // Define Name Variables
+
   const someoneName = "LEZZIE NICE SULMERON MENDEZ";
   const projectName = "My Heart Went Oops";
 
-  // =========================================
-  // 1. STATE & MECHANICS (Merge, Collision, Text)
-  // =========================================
-  
-  // Dedicated State Machine: separate | merging | merged
   const [mergeState, setMergeState] = useState('separate');
   const [isBurstActive, setIsBurstActive] = useState(false);
-  const someoneHeartRef = useRef(null); // Reference to her heart
-  const interactionRef = useRef(null); // Reference for dynamic drag boundaries
+  const someoneHeartRef = useRef(null);
+  const interactionRef = useRef(null);
 
-  // --- NEW: AUDIO REF ---
-  // We create the Audio object once and store it in a ref so it doesn't reload.
   const audioRef = useRef(new Audio(mergeSoundFile));
 
-  // Position trackers (States, not MotionValues, for robust collision check)
   const [dragX, setDragX] = useState(0);
   const [dragY, setDragY] = useState(0);
 
-  // Dynamic romantic text based on state
   const romanticText = useMemo(() => {
     switch (mergeState) {
       case 'merged': return "Two souls, one heartbeat, forever combined in this endless universe.";
@@ -42,22 +29,18 @@ const App = () => {
     }
   }, [mergeState]);
 
-  // Handle Drag Position Updates from child
   const handleDragPosition = useCallback((x, y) => {
     setDragX(x);
     setDragY(y);
   }, []);
 
-  // Check for Collision/Merge on position change
   useEffect(() => {
     if (mergeState !== 'separate' || !someoneHeartRef.current) return;
 
-    // Get Special Someone's heart position relative to viewport
     const someoneRect = someoneHeartRef.current.getBoundingClientRect();
     const someoneCenterX = someoneRect.left + someoneRect.width / 2;
     const someoneCenterY = someoneRect.top + someoneRect.height / 2;
-
-    // Get current position of "Your Heart" too.
+    
     const myHeartEl = document.getElementById('my-draggable-heart');
     if (!myHeartEl) return;
     const myRect = myHeartEl.getBoundingClientRect();
@@ -92,13 +75,11 @@ const App = () => {
   // Clean up burst effect after it finishes
   useEffect(() => {
     if (isBurstActive) {
-      const timer = setTimeout(() => setIsBurstActive(false), 2000); // Duration of the full emoji explosion
+      const timer = setTimeout(() => setIsBurstActive(false), 2000);
       return () => clearTimeout(timer);
     }
   }, [isBurstActive]);
 
-  // --- NEW: CLEANUP AUDIO ---
-  // Stop the music if the user closes the component/app
   useEffect(() => {
     const currentAudio = audioRef.current;
     return () => {
@@ -107,10 +88,6 @@ const App = () => {
     };
   }, []);
 
-  // =========================================
-  // 2. CURSOR (Mouse Tracking)
-  // =========================================
-  
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isMobileDevice, setIsMobileDevice] = useState(false);
 
@@ -128,9 +105,6 @@ const App = () => {
     return () => window.removeEventListener("mousemove", updateMousePosition);
   }, []);
 
-  // =========================================
-  // 3. COSMIC ELEMENT GENERATION (Sparks, Explosion)
-  // =========================================
 
   const backgroundSparks = useMemo(() => {
     const colors = ['#ff4d6d', '#c77dff', '#00f5d4', '#fdfcdc', '#ff9a9e'];
@@ -159,9 +133,6 @@ const App = () => {
     }));
   }, [isBurstActive]);
 
-  // =========================================
-  // 4. ANIMATION VARIANTS & PATHS
-  // =========================================
   
   const standaloneHeartPulse = {
     animate: {
@@ -194,7 +165,6 @@ const App = () => {
 
   const heartPath = "M16 28.5L4.65 17.15C2.65 15.15 1.5 12.5 1.5 9.5C1.5 6.5 3.92 3.5 7.5 3.5C9.74 3.5 11.62 4.44 13 6C14.38 4.44 16.26 3.5 18.5 3.5C22.08 3.5 24.5 6.5 24.5 9.5C24.5 12.5 23.35 15.15 21.35 17.15L16 28.5Z";
 
-  // --- Render Components ---
   return (
     <div className="main-scene">
       {/* BACKGROUND */}
@@ -333,9 +303,6 @@ const App = () => {
   );
 };
 
-// =========================================
-// 5. DRAGGABLE HEART COMPONENT 
-// =========================================
 const DraggableHeart = ({ MyPhoto, heartPath, StandaloneHeartPulse, handleDragPosition, constraintsRef }) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -363,9 +330,6 @@ const DraggableHeart = ({ MyPhoto, heartPath, StandaloneHeartPulse, handleDragPo
   );
 };
 
-// =========================================
-// 6. CSS STYLES
-// =========================================
 const styles = `
 * { cursor: none !important; }
 
